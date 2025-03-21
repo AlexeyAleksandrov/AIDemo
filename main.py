@@ -1,5 +1,6 @@
 from AI.create_data import create_data_chroma_db
 from AI.search_data import search_data_chroma_db
+from AI.mood_analyzer import check_mood
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
