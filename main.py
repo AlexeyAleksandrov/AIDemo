@@ -1,3 +1,10 @@
+import getpass
+import os
+
+from langchain_gigachat.chat_models import GigaChat
+from langchain_ollama import OllamaEmbeddings
+from langchain_community.llms import Ollama
+
 from AI.create_data import create_data_chroma_db
 from AI.search_data import search_data_chroma_db
 from AI.mood_analyzer import check_mood
@@ -9,9 +16,41 @@ app = Flask(__name__)
 CORS(app)
 
 
+# модель векторизации Ollama
+def get_ollama_embeddings():
+    return OllamaEmbeddings(
+        base_url="http://localhost:11434",
+        model="nomic-embed-text"
+    )
+
+
+# модель GigaChat
+def get_giga_chat_llm():
+    # инициализация GigaChat
+    if "GIGACHAT_CREDENTIALS" not in os.environ:
+        os.environ["GIGACHAT_CREDENTIALS"] = getpass.getpass("Введите ключ авторизации GigaChat API: ")
+
+    giga_chat = GigaChat(verify_ssl_certs=False)
+    return giga_chat
+
+
+# дополнительно: Модель OpenChat, запускается через Ollama
+def get_openchat_llm():
+    ollama = Ollama(
+        base_url='http://localhost:11434',
+        model="openchat"
+    )
+    return ollama
+
+
+# создаём объекты моделей
+embeddings = get_ollama_embeddings()    # модель для векторизации
+llm = get_giga_chat_llm()               # генеративный ИИ
+
+
 @app.route('/api/v1/create', methods=['POST'])
 def api_create():
-    create_data_chroma_db("/home/alexey/PycharmProjects/AIDemo/info.txt", "./market_chroma_db")
+    create_data_chroma_db(embeddings, "C:/Users/ASUS/PycharmProjects/AIDemo/info.txt", "./market_chroma_db")
     create_response = {"result": "Success!"}
 
     return jsonify(create_response)
@@ -26,9 +65,7 @@ def api_search():
 
     # Получаем текст из запроса
     question = data['text']
-
-    answer = search_data_chroma_db(question, "./market_chroma_db")
-
+    answer = search_data_chroma_db(llm, embeddings, question, "./market_chroma_db")
     answer_response = {"answer": answer}
 
     return jsonify(answer_response)
@@ -44,7 +81,7 @@ def api_mood():
     # Получаем текст из запроса
     question = data['text']
 
-    answer = check_mood(question)
+    answer = check_mood(llm, embeddings, question)
 
     answer_response = {"answer": answer}
 
