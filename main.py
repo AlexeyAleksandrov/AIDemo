@@ -11,7 +11,7 @@ CORS(app)
 
 @app.route('/api/v1/create', methods=['POST'])
 def api_create():
-    create_data_chroma_db("C:\\Users\\ASUS\\PycharmProjects\\AIDemo\\info.txt", "./market_chroma_db")
+    create_data_chroma_db("/home/alexey/PycharmProjects/AIDemo/info.txt", "./market_chroma_db")
     create_response = {"result": "Success!"}
 
     return jsonify(create_response)
