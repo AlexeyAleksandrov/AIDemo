@@ -3,7 +3,7 @@ import os
 
 from langchain_gigachat.chat_models import GigaChat
 from langchain_ollama import OllamaEmbeddings
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
 
 from AI.create_data import create_data_chroma_db
 from AI.search_data import search_data_chroma_db
@@ -35,10 +35,10 @@ def get_giga_chat_llm():
 
 
 # дополнительно: Модель OpenChat, запускается через Ollama
-def get_openchat_llm():
-    ollama = Ollama(
+def get_ollama_llm():
+    ollama = OllamaLLM(
         base_url='http://localhost:11434',
-        model="openchat"
+        model="deepseek-r1:8b"
     )
     return ollama
 
@@ -50,7 +50,7 @@ llm = get_giga_chat_llm()               # генеративный ИИ
 
 @app.route('/api/v1/create', methods=['POST'])
 def api_create():
-    create_data_chroma_db(embeddings, "C:/Users/ASUS/PycharmProjects/AIDemo/info.txt", "./market_chroma_db")
+    create_data_chroma_db(embeddings, "/home/alexey/PycharmProjects/AIDemo/info.txt", "./market_chroma_db")
     create_response = {"result": "Success!"}
 
     return jsonify(create_response)
