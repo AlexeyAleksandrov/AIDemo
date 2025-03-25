@@ -46,11 +46,13 @@ def get_ollama_llm():
 # создаём объекты моделей
 embeddings = get_ollama_embeddings()    # модель для векторизации
 llm = get_giga_chat_llm()               # генеративный ИИ
-
+# llm = get_ollama_llm()
 
 @app.route('/api/v1/create', methods=['POST'])
 def api_create():
-    create_data_chroma_db(embeddings, "/home/alexey/PycharmProjects/AIDemo/info.txt", "./market_chroma_db")
+    create_data_chroma_db(embeddings,
+                          "/home/alexey/PycharmProjects/AIDemo/info.txt",
+                          "./market_chroma_db")
     create_response = {"result": "Success!"}
 
     return jsonify(create_response)

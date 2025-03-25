@@ -32,6 +32,8 @@ def create_data_chroma_db(embeddings, filename: str, output_dir: str):
     all_splits = text_splitter.split_documents(data)
 
     # векторизация данных
-    Chroma.from_documents(documents=all_splits, embedding=embeddings, persist_directory=output_dir)
+    Chroma.from_documents(documents=all_splits,
+                          embedding=embeddings,
+                          persist_directory=output_dir)
 
     print("Данные векторизованы!")

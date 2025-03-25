@@ -27,8 +27,8 @@ def check_mood(llm, embeddings, dialog: str) -> str:
     question = "Какое настроение в данном диалоге у собеседников? " \
                "На сколько процентов, ты оцениваешь настроение по категориям: " \
                "восторженное, положительное, отрицательное, злобное? " \
-               "Your answer must be in JSON: { mood: <value> } where <value> " \
-               "is восторженное, положительное, отрицательное, злобное"
+               "Your answer must be in JSON: { mood: { восторженное: <value>, положительное: <value>, отрицательное: <value>, злобное: <value>} } where <value> " \
+               "is value from 0 to 100% in percent"
     docs = vectorstore.similarity_search(question)
 
     # формирование результата
