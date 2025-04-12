@@ -12,6 +12,8 @@ from AI.mood_analyzer import check_mood
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+from gigachat import GigaChat as GC
+
 app = Flask(__name__)
 CORS(app)
 
@@ -88,6 +90,15 @@ def api_mood():
     answer_response = {"answer": answer}
 
     return jsonify(answer_response)
+
+
+@app.route('/api/v1/chat', methods=['GET'])
+def api_chat():
+
+       # Укажите ключ авторизации, полученный в личном кабинете, в интерфейсе проекта GigaChat API [2](https://github.com/ai-forever/gigachat)
+    with GC(verify_ssl_certs=False) as giga:
+        response = giga.chat("Реши квадратное уравнение 3x^2+10x-30=0")
+        return response.choices[0].message.content
 
 
 if __name__ == '__main__':
